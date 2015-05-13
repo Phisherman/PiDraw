@@ -28,15 +28,15 @@ $(document).ready(function () {
     var gui = new GUI();
     gui.initialize(graph, ctx);
 
-    //Loop
+    //loop
     function refresh() {
         graph.update();
         ctx.clearRect(0, 0, w, h);
         graph.draw(ctx);
     }
 
-    loop = setInterval(refresh, 20);
-})
+    setInterval(refresh, 20);
+});
 //Funktionen
 function getUriWithoutParams() {
     return window.location.protocol + '//' + window.location.host + window.location.pathname;
@@ -208,7 +208,7 @@ GUI.prototype.initialize = function (graph, context) {
         $('#randomModeAsymmetrical').removeClass('active');
         $('#randomModeMixed').removeClass('active');
     };
-}
+};
 //Ende GUI
 
 //ParamGetter
@@ -225,45 +225,44 @@ ParamGetter.prototype.get = function (name) {
         return null;
     else
         return results[1];
-}
+};
 ParamGetter.prototype.getAutoComplete = function () {
     var completeFigure = this.get('autocomplete');
     if (completeFigure == null)
         return null;
     return completeFigure == 'true';
-}
+};
 ParamGetter.prototype.getMinPointDistance = function () {
     var minPointDistance = parseFloat(this.get('mpd'));
     if (minPointDistance != null && isNaN(minPointDistance) == false && minPointDistance >= 0)
         return minPointDistance;
     return null;
-}
+};
 ParamGetter.prototype.getScale = function () {
     var scale = parseFloat(this.get('scale'));
     if (scale != null && isNaN(scale) == false)
         return scale;
     return null;
-}
+};
 ParamGetter.prototype.getCode = function () {
     var code = this.get('code');
     return code;
-}
+};
 ParamGetter.prototype.getVelocity = function () {
     var velocity = parseInt(this.get('v'));
     if (velocity != null && isNaN(velocity) == false)
         return velocity;
     return null;
-}
+};
 ParamGetter.prototype.getShowJointPieces = function () {
     var showJointPieces = this.get('showcircle');
     if (showJointPieces == null)
         return null;
     return showJointPieces == 'true';
-}
+};
 ParamGetter.prototype.getRandomMode = function () {
-    var mode = this.get('randommode');
-    return mode;
-}
+    return this.get('randommode');
+};
 //Ende ParamGetter
 
 //Random
@@ -273,17 +272,17 @@ Random.prototype.getNumberWithNegative = function (min, max) {
     if (this.getBoolean())
         return this.getNumber(min, max) * -1;
     return this.getNumber(min, max);
-}
+};
 Random.prototype.getBoolean = function () {
     return this.getNumber(0, 1) == 1;
-}
+};
 Random.prototype.getNumber = function (min, max) {
     if (min > max)
         return -1;
     if (min == max)
         return min;
     return min + parseInt(Math.random() * (max - min + 1));
-}
+};
 //Ende Random
 
 //Point
@@ -295,7 +294,7 @@ Point.prototype.getDistanceTo = function (x, y) {
     var a = Math.abs(this.x - x);
     var b = Math.abs(this.y - y);
     return Math.sqrt(a * a + b * b);
-}
+};
 //Ende Point
 
 //JointPiece
@@ -315,20 +314,20 @@ JointPiece.prototype.isAtStartAngle = function () {
         angleInDegreesFixed = this.angleInDegrees;
     var equal = Math.abs(angleInDegreesFixed - this.startAngleInDegrees);
     return equal < 0.00001;
-}
+};
 JointPiece.prototype.getEndPoint = function (scale) {
     var x, y;
     x = this.position.x + Math.sin(Math.PI / 180.0 * this.angleInDegrees) * this.radius * scale;
     y = this.position.y + Math.cos(Math.PI / 180.0 * this.angleInDegrees) * this.radius * -scale;
     return new Point(x, y);
-}
+};
 JointPiece.prototype.getValidAngle = function (value) {
     while (value >= 360.0)
         value -= 360.0;
     while (value < 0)
         value += 360.0;
     return value;
-}
+};
 JointPiece.prototype.draw = function (context, color, scale) {
     var endPoint = this.getEndPoint(scale);
     context.fillStyle = color;
@@ -350,16 +349,16 @@ JointPiece.prototype.draw = function (context, color, scale) {
     context.moveTo(this.position.x, this.position.y);
     context.lineTo(endPoint.x, endPoint.y);
     context.stroke();
-}
+};
 JointPiece.prototype.update = function (endPointOfConnectedJointPiece) {
     this.position = endPointOfConnectedJointPiece;
     this.angleInDegrees += this.angleChangeRateInDegrees;
     this.angleInDegrees = this.getValidAngle(parseFloat(this.angleInDegrees));
-}
+};
 JointPiece.prototype.reset = function (endPointOfConnectedJointPiece) {
     this.angleInDegrees = this.startAngleInDegrees;
     this.position = endPointOfConnectedJointPiece;
-}
+};
 JointPiece.prototype.isAtPosition = function (x, y, scale, maxPointDistance) {
     var endpoint = this.getEndPoint(scale);
     var delta = new Point(endpoint.x - this.position.x, endpoint.y - this.position.y);
@@ -367,7 +366,7 @@ JointPiece.prototype.isAtPosition = function (x, y, scale, maxPointDistance) {
     var b = endpoint.y - m * endpoint.x;
     var linePoint = new Point(x, m * x + b);
     return linePoint.getDistanceTo(x, y) <= maxPointDistance;
-}
+};
 //Ende JointPiece
 
 
@@ -392,31 +391,31 @@ History.prototype.add = function (code) {
         this.current++;
         this.data[this.current] = code;
     }
-}
+};
 History.prototype.containsItems = function () {
     return this.data.length > 0;
-}
+};
 History.prototype.contains = function (code) {
     for (var i = 0; i < this.data.length; i++)
         if (this.data[i] == code)
             return true;
     return false;
-}
+};
 History.prototype.hasPreviousItem = function () {
     var x = this.current > 0 || this.current == 0 && this.data.length > 1;
     console.log(x);
     return x;
-}
+};
 History.prototype.getPreviousItem = function () {
     if (this.data.length > 1)
         if (this.current > 0)
             return this.data[this.current - 1];
         else
             return this.data[this.max - 1];
-}
+};
 History.prototype.getCurrentItem = function () {
     return this.data[this.current];
-}
+};
 History.prototype.moveToPreviousItem = function () {
     console.log(this);
     if (this.data.length > 1)
@@ -425,7 +424,7 @@ History.prototype.moveToPreviousItem = function () {
         else
             this.current = this.max - 1;
     console.log(this);
-}
+};
 //Ende History
 
 //Graph
@@ -460,13 +459,13 @@ Graph.prototype.loadPreviousFigure = function () {
         this.history.moveToPreviousItem();
         this.load(this.history.getCurrentItem());
     }
-}
+};
 Graph.prototype.clear = function () {
     this.jointPieces.length = 0; //loescht Array
     this.figurePoints.length = 0;
     this.figureCompleted = false;
     this.figureTooBig = false;
-}
+};
 Graph.prototype.addJointPiece = function (radius, angleChangeRateInDegrees, angleInDegrees) {
     var elements = this.jointPieces.length;
     var jointPiece;
@@ -478,7 +477,7 @@ Graph.prototype.addJointPiece = function (radius, angleChangeRateInDegrees, angl
         jointPiece = new JointPiece(this.center, radius, angleChangeRateInDegrees, angleInDegrees);
 
     this.jointPieces.push(jointPiece);
-}
+};
 Graph.prototype.addSpiraloPiece = function (radius) {
     var elements = this.jointPieces.length;
     if (elements > 0) {
@@ -489,7 +488,7 @@ Graph.prototype.addSpiraloPiece = function (radius) {
             lastJointPiece.angleInDegrees);
         this.jointPieces[this.jointPieces.length - 1].innerSpiraloPiece = true;
     }
-}
+};
 Graph.prototype.draw = function (context) {
     //Zeichne Gelenke
     if (this.showJointPieces)
@@ -503,7 +502,7 @@ Graph.prototype.draw = function (context) {
         context.lineTo(this.figurePoints[i].x, this.figurePoints[i].y);
     }
     context.stroke();
-}
+};
 Graph.prototype.update = function () {
     for (var k = 0; k < this.velocity; k++) {
         var elements = this.jointPieces.length;
@@ -531,20 +530,20 @@ Graph.prototype.update = function () {
             }
         }
     }
-}
+};
 Graph.prototype.isAtStartAngles = function () {
     for (var i = 0; i < this.jointPieces.length; i++)
         if (this.jointPieces[i].isAtStartAngle() == false) {
             return false;
         }
     return true;
-}
+};
 Graph.prototype.isFigureCompleted = function () {
     return this.isAtStartAngles() && this.figurePoints.length > 0;
-}
+};
 Graph.prototype.areFigurePointsFree = function () {
     return this.figurePoints.length < this.maxFigurePoints;
-}
+};
 Graph.prototype.completeFigure = function () {
     if (this.jointPieces.length == 0)
         return;
@@ -557,7 +556,7 @@ Graph.prototype.completeFigure = function () {
         }
         this.update();
     }
-}
+};
 Graph.prototype.getCode = function () {
     //Codeaufbau: radius1|winkelgeschwindigkeit1|startwinkel1|r2|wg2|sw2:...
     var code = '';
@@ -566,7 +565,7 @@ Graph.prototype.getCode = function () {
         code += piece.radius + '|' + piece.angleChangeRateInDegrees + '|' + piece.startAngleInDegrees + '|';
     }
     return code.substring(0, code.length - 1);
-}
+};
 Graph.prototype.getShareLink = function () {
     return getUriWithoutParams() +
         '?code=' + this.getCode() +
@@ -575,7 +574,7 @@ Graph.prototype.getShareLink = function () {
         '&autocomplete=' + this.autoComplete +
         '&randommode=' + this.randomMode +
         '&showcircle=' + this.showJointPieces;
-}
+};
 Graph.prototype.load = function (code) {
     if (code == null) return;
     var pattern = /-?\d+(?:\.\d+)?/g;
@@ -590,29 +589,30 @@ Graph.prototype.load = function (code) {
         if (this.autoComplete)
             this.completeFigure();
     }
-}
+};
 Graph.prototype.areCodeValuesValid = function (values) {
     if (values == null || values.length == 0 || values.length % 3 != 0)
         return false;
-    for (var i = 0; i < values.length; i++)
+    var i;
+    for (i = 0; i < values.length; i++)
         if (isNaN(values[i]))
             return false;
-    for (var i = 0; i < values.length; i += 3)
+    for (i = 0; i < values.length; i += 3)
         if (this.isValueValidRadius(values[i]) == false || this.isValueValidAngleChangeRateInDegrees(values[i + 1]) == false)
             return false;
 
     return true;
-}
+};
 Graph.prototype.isValueValidRadius = function (value) {
     if (value == null)
         return false;
     return value >= this.minRadius && value <= this.maxRadius;
-}
+};
 Graph.prototype.isValueValidAngleChangeRateInDegrees = function (value) {
     if (value == null)
         return false;
     return value >= this.minAngleChangeRateInDegrees && value <= this.maxAngleChangeRateInDegrees;
-}
+};
 Graph.prototype.randomize = function () {
     if (this.jointPieces.length > 0)
         this.history.add(this.getCode());
@@ -654,25 +654,25 @@ Graph.prototype.randomize = function () {
 
     if (this.autoComplete)
         this.completeFigure();
-}
+};
 Graph.prototype.setScale = function (value) {
     if (this.isValueValidScale(value))
         this.scale = value;
-}
+};
 Graph.prototype.isValueValidScale = function (value) {
     if (value == null)
         return false;
     return value >= this.minScale && value <= this.maxScale;
-}
+};
 Graph.prototype.setVelocity = function (value) {
     if (this.isValueValidVelocity(value))
         this.velocity = value;
-}
+};
 Graph.prototype.isValueValidVelocity = function (value) {
     if (value == null)
         return false;
     return value >= this.minVelocity && value <= this.maxVelocity;
-}
+};
 Graph.prototype.reset = function () {
     this.figurePoints.length = 0;
     this.figureCompleted = false;
@@ -683,46 +683,45 @@ Graph.prototype.reset = function () {
         for (var i = 1; i < elements; i++)
             this.jointPieces[i].reset(this.jointPieces[i - 1].getEndPoint(this.scale));
     }
-
-}
+};
 Graph.prototype.getPNG = function (context) {
     var canvas = document.getElementById('canvas');
     var gfx = canvas.toDataURL('image/png');
     //this.showJointPieces = true;
     return gfx;
-}
+};
 Graph.prototype.selectPiece = function (x, y) {
     for (var i = 0; i < this.jointPieces.length; i++)
         if (this.jointPieces[i].isAtPosition(x, y, this.scale, 7))
             console.log(i + " angeklickt");
-}
+};
 Graph.prototype.setShowJointPieces = function (value) {
     if (this.isValueValidBoolean(value))
         this.showJointPieces = value;
-}
+};
 Graph.prototype.setAutoComplete = function (value) {
     if (this.isValueValidBoolean(value))
         this.autoComplete = value;
-}
+};
 Graph.prototype.isValueValidBoolean = function (value) {
     return value != null && (value == 'true' || value == true);
-}
+};
 Graph.prototype.setMinPointDistance = function (value) {
     if (this.isValueValidMinPointDistance(value))
         this.minPointDistance = value;
-}
+};
 Graph.prototype.isValueValidMinPointDistance = function (value) {
     return value != null && value >= 0;
-}
+};
 Graph.prototype.setRandomMode = function (value) {
     if (this.isValueValidRandomMode(value))
         this.randomMode = value;
-}
+};
 Graph.prototype.isValueValidRandomMode = function (value) {
     if (value == null)
         return false;
     return value == 'mixed' || value == 'symmetrical' || value == 'asymmetrical';
-}
+};
 //Ende Graph
 	
 	
