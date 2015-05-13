@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Pi Draw</title>
+    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <script src="main.js"></script>
+</head>
+<body>
+<div class="row">
+    <div class="col-lg-3"></div>
+    <div class="col-lg-6">
+        <h1>Pi Draw</h1>
+
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <a id="shareLink" style="position: absolute;" href="http://redundancy.pfweb.eu/phis/pidraw/?v=50#"><span
+                        class="glyphicon glyphicon-link"></span> share link</a>
+
+                <div style="width: 550px; height: 550px; margin: 0 auto;">
+                    <canvas id="canvas" class="text-center" width="550" height="550" style="margin: 0 auto;"></canvas>
+                </div>
+                <div style="text-align: center;">
+                    <div style="display: inline-block;" class="btn-toolbar">
+                        <div class="btn-group btn-group-lg">
+                            <a id="zoomIn" title="" class="btn btn-default" data-original-title="Vergrößern"><span
+                                    class="glyphicon glyphicon-zoom-in"></span></a>
+                            <a id="zoomOut" title="" class="btn btn-default" data-original-title="Verkleinern"><span
+                                    class="glyphicon glyphicon-zoom-out"></span></a>
+                        </div>
+                        <div class="btn-group btn-group-lg">
+                            <a id="showPreviousFigure" title="" rel="tooltip" class="btn btn-default disabled"
+                               data-original-title="Vorherige Figur"><span
+                                    class="glyphicon glyphicon-arrow-left"></span></a>
+                            <a id="randomize" title="" rel="tooltip" class="btn btn-primary"
+                               data-original-title="Neue zufällige Figur"><span
+                                    class="glyphicon glyphicon-arrow-right"></span></a>
+                            <a id="randomModeSymmetrical" class="btn btn-default">sym.</a>
+                            <a id="randomModeAsymmetrical" class="btn btn-default">asym.</a>
+                            <a id="randomModeMixed" class="btn btn-default active">beides</a>
+                        </div>
+                        <div class="btn-group btn-group-lg">
+                            <a id="showJointPieces" title="" class="btn btn-default active"
+                               data-original-title="Zirkel anzeigen"><span class="glyphicon glyphicon-off"></span></a>
+                            <a id="autoComplete" title="" class="btn btn-default active"
+                               data-original-title="Figur sofort vervollständigen"><span
+                                    class="glyphicon glyphicon-repeat"></span></a>
+                            <a id="saveFigure" title="" class="btn btn-default"
+                               data-original-title="Als Bild speichern"><span
+                                    class="glyphicon glyphicon-floppy-disk"></span></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--end panel-body-->
+        </div>
+        <div class="alert alert-danger"><strong>Achtung</strong><br>Diese Version ist immer noch in der Entwicklung.<br>Nicht
+            wundern, falls etwas nicht zum gewünschten Ergebnis führt!
+        </div>
+        <div class="col-lg-3"></div>
+    </div>
+</div>
+
+</body>
+</html>
