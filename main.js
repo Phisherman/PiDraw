@@ -144,8 +144,11 @@ GUI.prototype.initialize = function (graph, context) {
 
     $('#showPreviousFigure').click(function () {
         if ($('#showPreviousFigure').hasClass('disabled') == false) {
-            graph.loadPreviousFigure();
-            if (graph.history.hasPreviousItem() == false)
+            if (graph.history.get()) {
+                graph.load(graph.history.get());
+            }
+
+            if (!graph.history.navigateDown())
                 $('#showPreviousFigure').addClass('disabled');
         }
         console.log(graph.history);
@@ -153,7 +156,6 @@ GUI.prototype.initialize = function (graph, context) {
     $('#randomize').click(function () {
         graph.randomize();
         $('#showPreviousFigure').removeClass('disabled');
-        console.log(graph.history);
     });
 
 
@@ -369,67 +371,9 @@ JointPiece.prototype.isAtPosition = function (x, y, scale, maxPointDistance) {
 };
 //Ende JointPiece
 
-
-//History
-function History() {
-    this.data = [];
-    this.max = 50; //maximale Eintrage
-    this.current = -1; // letzter geschriebener Index
-}
-History.prototype.add = function (code) {
-    if (this.data.length < this.max) {
-        if (this.current < this.length - 1)
-            this.data[this.current++] = code;
-        else {
-            this.data.push(code);
-            this.current++;
-        }
-    }
-    else {
-        if (this.current == this.max - 1)
-            this.current = -1;
-        this.current++;
-        this.data[this.current] = code;
-    }
-};
-History.prototype.containsItems = function () {
-    return this.data.length > 0;
-};
-History.prototype.contains = function (code) {
-    for (var i = 0; i < this.data.length; i++)
-        if (this.data[i] == code)
-            return true;
-    return false;
-};
-History.prototype.hasPreviousItem = function () {
-    var x = this.current > 0 || this.current == 0 && this.data.length > 1;
-    console.log(x);
-    return x;
-};
-History.prototype.getPreviousItem = function () {
-    if (this.data.length > 1)
-        if (this.current > 0)
-            return this.data[this.current - 1];
-        else
-            return this.data[this.max - 1];
-};
-History.prototype.getCurrentItem = function () {
-    return this.data[this.current];
-};
-History.prototype.moveToPreviousItem = function () {
-    console.log(this);
-    if (this.data.length > 1)
-        if (this.current > 0)
-            this.current -= 1;
-        else
-            this.current = this.max - 1;
-    console.log(this);
-};
-//Ende History
-
 //Graph
 function Graph(center, jointPieceColor, figureColor) {
-    this.history = new History();
+    this.history = new StupidHistory();
     this.center = center;
     this.jointPieceColor = jointPieceColor;
     this.figureColor = figureColor;
@@ -454,12 +398,6 @@ function Graph(center, jointPieceColor, figureColor) {
     this.maxAngleChangeRateInDegrees = 20;
     this.minAngleChangeRateInDegrees = -20;
 }
-Graph.prototype.loadPreviousFigure = function () {
-    if (this.history.containsItems()) {
-        this.history.moveToPreviousItem();
-        this.load(this.history.getCurrentItem());
-    }
-};
 Graph.prototype.clear = function () {
     this.jointPieces.length = 0; //loescht Array
     this.figurePoints.length = 0;
@@ -614,9 +552,6 @@ Graph.prototype.isValueValidAngleChangeRateInDegrees = function (value) {
     return value >= this.minAngleChangeRateInDegrees && value <= this.maxAngleChangeRateInDegrees;
 };
 Graph.prototype.randomize = function () {
-    if (this.jointPieces.length > 0)
-        this.history.add(this.getCode());
-
     var random = new Random();
     this.clear();
     this.addJointPiece(random.getNumber(10, 20), random.getNumberWithNegative(1, 4) * 0.5, this.randomMode != 'symmetrical' ? random.getNumber(1, 359) : 0); //erstes Gelenk
@@ -654,6 +589,11 @@ Graph.prototype.randomize = function () {
 
     if (this.autoComplete)
         this.completeFigure();
+
+    if (this.jointPieces.length > 0) {
+        this.history.add(this.getCode());
+        this.history.resetOffset();
+    }
 };
 Graph.prototype.setScale = function (value) {
     if (this.isValueValidScale(value))
@@ -723,12 +663,3 @@ Graph.prototype.isValueValidRandomMode = function (value) {
     return value == 'mixed' || value == 'symmetrical' || value == 'asymmetrical';
 };
 //Ende Graph
-	
-	
-	
-	
-	
-	
-	
-	
-	
